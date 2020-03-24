@@ -1,21 +1,15 @@
 """Send an email message from the user's account.
 """
 #Auth
+import os
 import pickle
-#import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 #Email
 import base64
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import mimetypes
-import os
 from string import Template
 
 #Calendar
@@ -27,14 +21,18 @@ from apiclient import errors
 
 #USER VARIABLES
 from config import * #(DON'T DO THIS IN PRODUCTION-GRADE CODE)
-IS_IN_TEST_MODE = False
+IS_IN_TEST_MODE = True
 
-msg_template = ""
-with open(PATH_TO_TEMPLATE) as file:
-	msg_template = Template(file.read())
+def createTemplates():
+	"""Create email Template objects"""
 	
-subject_template = "Coding Boot Camp - Tutorial Confirmation <$date ${starttime}-${endtime}>"
-subject_template = Template(subject_template)
+	msg_template = ""
+	with open(PATH_TO_MSG_TEMPLATE) as file:
+		msg_template = Template(file.read())
+		
+	subject_template = Template(SUBJECT_TEMPLATE)
+	
+	return (msg_template, subject_template)
 
 
 def CreateMessage(sender, to, subject, message_text, cc='', bcc=''):
@@ -80,15 +78,12 @@ def SendMessage(service, user_id, message):
     print ('An error occurred: %s' % error)
 
 ##Google API Permissions
-#Gmail - Send
-#Calendar - Read-only
-#Sheets - Read-only
-SCOPES = ['https://www.googleapis.com/auth/gmail.send', 
-			'https://www.googleapis.com/auth/calendar.readonly',
-			'https://www.googleapis.com/auth/spreadsheets.readonly']
-#APPLICATION_NAME = 'Trilogy Auto-Confirmation Emailer'
+SCOPES = ['https://www.googleapis.com/auth/gmail.send', #Gmail - send
+			'https://www.googleapis.com/auth/calendar.readonly', #Calendar - read-only
+			'https://www.googleapis.com/auth/spreadsheets.readonly'] #Sheets - read-only
 
 def auth():
+	"""Authenticate into Google API services"""
 	creds = None
 	# The file token.pickle stores the user's access and refresh tokens, and is
 	# created automatically when the authorization flow completes for the first
@@ -111,8 +106,11 @@ def auth():
 	
 	return creds
 
-def execute():
+
+def main():
 	creds = auth()
+	
+	msg_template, subject_template = createTemplates()
 	
 	#Build google services
 	gmail_svc = build('gmail', 'v1', credentials=creds)
@@ -122,6 +120,7 @@ def execute():
 	#Retrieve Calendar events
 	now = datetime.utcnow().isoformat() + TIMEZONE_STR
 	day_later = (datetime.utcnow() + timedelta(hours=24)).isoformat() + TIMEZONE_STR
+	
 	#Get next day's events
 	events_result = calendar_svc.events().list(calendarId='primary', timeMin=now, timeMax=day_later,
                                         maxResults=10, singleEvents=True,
@@ -134,16 +133,12 @@ def execute():
 	for event in events:
 		start = event['start'].get('dateTime', event['start'].get('date'))
 		#Ensure Trilogy bootcamp session
-		#TODO: Custom events may not have description!
-		if 'Boot Camp Tutorial Session' not in event['description']:
+		if EVENT_DESCRIPTION not in event['description']:
 			continue
 		#Check for cancellation
 		if 'Canceled' in event['summary']:
 			continue
 		tutoring_events.append(event)
-		#print(start, event['summary'])
-		#print(event['status'])
-		#print(event['attendees'])
 		
 	if not tutoring_events:
 		print('No upcoming tutoring sessions found.')
@@ -158,19 +153,14 @@ def execute():
 	if not values:
 		print("No Sheets data found. Check your RANGE_NAME to ensure you're looking in the right place in your Sheet.")
 	else:
-		#print('Name, Major:')
 		for row in values:
 			try:
 				student_data[row[EMAIL_COLUMN]] = (row[NAME_COLUMN], row[TZ_COLUMN], row[ZOOM_COLUMN])
 			except:
 				print('If range out of index error, ensure there is data in each of the columns above for each student!')
-			#student_data.append((row[NAME_COLUMN], row[EMAIL_COLUMN], row[TZ_COLUMN]))
-			#print('%s, %s, %s' % (row[NAME_COLUMN], row[TZ_COLUMN], row[ZOOM_COLUMN]))
 
-	#print(student_data)
-
+	#Send confirmation email for each event
 	for event in tutoring_events:
-		#Get email address
 		student_email = ""
 		for attendee in event['attendees']:
 			if attendee['email'] != TUTOR_EMAIL: #2 attendees, ignore tutor
@@ -213,21 +203,19 @@ def execute():
 		
 		msg_text = msg_template.substitute(name=student_firstname,
 						date=event_date, starttime=event_start, endtime=event_end, zoomlink=student_zoom)
-						
-		#print(msg_text)
 		
 		subject_text = subject_template.substitute(date=event_date, starttime=event_start, endtime=event_end)
-		
-		#print(subject_text)
 	
 		message = None
 		if IS_IN_TEST_MODE:
 			message = CreateMessage(sender=TUTOR_SENDER, to=TEST_EMAIL, subject=subject_text, message_text=msg_text)
 		else:
 			message = CreateMessage(sender=TUTOR_SENDER, to=student_email, subject=subject_text, message_text=msg_text, cc='centraltutorsupport@bootcampspot.com')
+			
 		SendMessage(gmail_svc, 'me', message)
 	
 	if IS_IN_TEST_MODE:
 		print('Test complete. Hope it worked!')
 	
-execute()
+if __name__ == "__main__":
+	main()
