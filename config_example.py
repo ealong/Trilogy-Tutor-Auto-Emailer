@@ -37,4 +37,4 @@ is_dst = time.localtime().tm_isdst
 TIMEZONE_STR = "-05:00" if is_dst else "-06:00"
 """
 
-TEST_EMAIL = #String - Email address for receiving test emails
+TEST_EMAIL = #String - Email address for receiving test emails. Change the value of IS_IN_TEST_MODE to toggle test mode.
