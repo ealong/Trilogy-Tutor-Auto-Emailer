@@ -1,6 +1,6 @@
 ## Trilogy Tutor Auto-Confirmation Emailer
 
-###by Earnest Long, Jr., Senior Data Visualization Tutor
+### by Earnest Long, Jr., Senior Data Visualization Tutor
 
 **Description:**
 
