@@ -1,5 +1,3 @@
-"""Send an email message from the user's account.
-"""
 #Auth
 import os
 import pickle
@@ -21,7 +19,7 @@ from apiclient import errors
 
 #USER VARIABLES
 from config import * #(DON'T DO THIS IN PRODUCTION-GRADE CODE)
-IS_IN_TEST_MODE = True
+IS_IN_TEST_MODE = False
 
 def createTemplates():
 	"""Create email Template objects"""
@@ -118,13 +116,12 @@ def main():
 	sheets_svc = build('sheets', 'v4', credentials=creds)
 	
 	#Retrieve Calendar events
-	now = datetime.utcnow().isoformat() + TIMEZONE_STR
-	day_later = (datetime.utcnow() + timedelta(hours=24)).isoformat() + TIMEZONE_STR
+	now = datetime.now(timezone(TUTOR_TIMEZONE)).isoformat()
+	day_later = (datetime.now(timezone(TUTOR_TIMEZONE)) + timedelta(hours=24)).isoformat()
 	
 	#Get next day's events
 	events_result = calendar_svc.events().list(calendarId='primary', timeMin=now, timeMax=day_later,
-                                        maxResults=10, singleEvents=True,
-                                        orderBy='startTime').execute()
+                                        singleEvents=True, orderBy='startTime').execute()
 	events = events_result.get('items', [])
 	
 	tutoring_events = []
@@ -134,9 +131,11 @@ def main():
 		start = event['start'].get('dateTime', event['start'].get('date'))
 		#Ensure Trilogy bootcamp session
 		if EVENT_DESCRIPTION not in event['description']:
+			#print(f"Not bootcamp session: {event['summary']}")
 			continue
 		#Check for cancellation
 		if 'Canceled' in event['summary']:
+			#print(f"Cancelled: {event['summary']}")
 			continue
 		tutoring_events.append(event)
 		

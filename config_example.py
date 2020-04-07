@@ -26,15 +26,6 @@ TZ_COLUMN =
 ZOOM_COLUMN = 
 #See guide for variables above here: https://imgur.com/a/q4LClAE
 
-TIMEZONE_STR = #String - UTC Offset of Tutor's timezone in format '+XX:00' or '-XX:00'
-"""
-Example:
-
-import time
-
-#Check for Daylight Savings Time
-is_dst = time.localtime().tm_isdst
-TIMEZONE_STR = "-05:00" if is_dst else "-06:00"
-"""
+TUTOR_TIMEZONE = #String - pytz recognizeable timezone of tutor (for list of valid values, see here: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 
 TEST_EMAIL = #String - Email address for receiving test emails. Change the value of IS_IN_TEST_MODE to toggle test mode.
