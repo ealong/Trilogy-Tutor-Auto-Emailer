@@ -1,4 +1,4 @@
-PATH_TO_MSG_TEMPLATE = #String - file path to msg_template.html
+PATH_TO_MSG_TEMPLATE = 'msg_template.html' - #String - file path to msg_template.html (modify as needed)
 SUBJECT_TEMPLATE = #String - desired subject line containing the placeholder variables $date, $starttime, and $endtime
 """
 Example:
@@ -28,4 +28,9 @@ ZOOM_COLUMN =
 
 TUTOR_TIMEZONE = #String - pytz recognizeable timezone of tutor (for list of valid values, see here: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 
+RESENDING_EMAILS = False #Boolean - Flag indicating whether script should resend emails that have already been sent for next calendar day
+NIGHTLY_CUTOFF = '06:00' #String - Time after which the script should send confirmation emails for the next calendar.
+#^^For the night owls that want to send emails after midnight for the 'same' day.
+
+IS_IN_TEST_MODE = True #Boolean - Flag indicating whether script is in test mode (emails will send to TEST_EMAIL instead of student and Central Support)
 TEST_EMAIL = #String - Email address for receiving test emails. Change the value of IS_IN_TEST_MODE to toggle test mode.
