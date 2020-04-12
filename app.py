@@ -131,9 +131,8 @@ def main():
 	if not events:
 		print('No upcoming events on calendar.')
 	for event in events:
-		start = event['start'].get('dateTime', event['start'].get('date'))
 		# Ensure Trilogy bootcamp session
-		if EVENT_DESCRIPTION not in event['description']:
+		if 'description' not in event or EVENT_DESCRIPTION not in event['description']:
 			#print(f"Not bootcamp session: {event['summary']}")
 			continue
 		# Check for cancellation
@@ -163,7 +162,7 @@ def main():
 	
 	# Optionally check for emails already sent for next day
 	already_sent = set()
-	if not RESENDING_EMAILS:
+	if not RESENDING_EMAILS and not IS_IN_TEST_MODE:
 		with shelve.open('sent_msgs') as shelf:
 			if next_day_start.isoformat() in shelf:
 				already_sent = shelf[next_day_start.isoformat()]
@@ -232,16 +231,17 @@ def main():
 	else:
 		print(f"Emails sent: {len(messages_sent)}, emails skipped because already sent: {len(already_sent)}.")
 	
-	next_day_str = next_day_start.isoformat()
-	with shelve.open('sent_msgs', writeback=True) as shelf:
-		if next_day_str in shelf:
-			shelf[next_day_str].update(messages_sent)
-		else:
-			shelf[next_day_str] = set(messages_sent)
-			
-		for key in shelf:
-			if key != next_day_str:
-				del shelf[key] # Purge old keys
+	if not IS_IN_TEST_MODE:
+		next_day_str = next_day_start.isoformat()
+		with shelve.open('sent_msgs', writeback=True) as shelf:
+			if next_day_str in shelf:
+				shelf[next_day_str].update(messages_sent)
+			else:
+				shelf[next_day_str] = set(messages_sent)
+				
+			for key in shelf:
+				if key != next_day_str:
+					del shelf[key] # Purge old keys
 	
 	if IS_IN_TEST_MODE:
 		print('Test complete. Set IS_IN_TEST_MODE = False in config to send to students.')
