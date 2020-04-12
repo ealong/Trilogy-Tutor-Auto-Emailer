@@ -116,7 +116,7 @@ def main():
 	
 	# Retrieve Calendar events
 	now = datetime.now(timezone(TUTOR_TIMEZONE))
-	next_day_start = now.replace(hour=0, minute=0, second=0, microsecond=0) # Reset to start of day
+	next_day_start = now.replace(hour=0, minute=0, second=0, microsecond=0) # Reset to start of today
 	if (now.time().isoformat() > NIGHTLY_CUTOFF):
 		next_day_start += timedelta(hours=24) # Get next calendar day
 	next_day_end = next_day_start + timedelta(hours=24)
@@ -132,11 +132,11 @@ def main():
 		print('No upcoming events on calendar.')
 	for event in events:
 		# Ensure Trilogy bootcamp session
-		if 'description' not in event or EVENT_DESCRIPTION not in event['description']:
+		if EVENT_DESCRIPTION not in event.get('description', ''):
 			#print(f"Not bootcamp session: {event['summary']}")
 			continue
 		# Check for cancellation
-		if 'Canceled' in event['summary']:
+		if 'Canceled' in event.get('summary', ''):
 			#print(f"Cancelled: {event['summary']}")
 			continue
 		tutoring_events.append(event)
