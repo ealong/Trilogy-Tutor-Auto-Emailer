@@ -24,7 +24,7 @@ The script uses the Gmail, Google Calendar, and Google Sheets APIs to 1) extract
         * Sheets: https://developers.google.com/sheets/api/quickstart/python
     * After enabling all 3 APIs, download the credentials.json file into the project directory.
  * The Hard(er) Way:
-    * Create a project in the Google Developer Console, enable the APIs for that project, manually create the credentials file, then download to the project directory.
+    * Create a project in the Google Developer Console, enable the APIs for that project, download the credentials file to the project directory, then manually add client_secret to the credentials file.
 
 3. Create the following:
 

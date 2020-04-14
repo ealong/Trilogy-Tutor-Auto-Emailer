@@ -74,7 +74,7 @@ def SendMessage(service, user_id, message):
   except errors.HttpError as error:
     print ('An error occurred: %s' % error)
 
-##Google API Permissions
+# Google API Permissions
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', #Gmail - send
 			'https://www.googleapis.com/auth/calendar.readonly', #Calendar - read-only
 			'https://www.googleapis.com/auth/spreadsheets.readonly'] #Sheets - read-only
@@ -174,7 +174,7 @@ def main():
 		if event['id'] not in already_sent:
 			student_email = ""
 			for attendee in event['attendees']:
-				if attendee['email'] != TUTOR_EMAIL: #2 attendees, ignore tutor
+				if attendee['email'] != TUTOR_EMAIL: # 2 attendees, ignore tutor
 					student_email = attendee['email']
 			#Lookup email in Sheets data
 			while student_email != 'skip' and student_email not in student_data:
