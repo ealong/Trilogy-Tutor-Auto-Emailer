@@ -15,7 +15,7 @@ The script uses the Gmail, Google Calendar, and Google Sheets APIs to 1) extract
 
 **Installation:**
 
-1. Clone the repository and pip install the requirements (in terminal, navigate to folder then run 'pip install requirements.txt').
+1. Clone the repository and pip install the requirements (in terminal, navigate to folder then run 'pip install -r requirements.txt').
 
 2. Enable the Gmail, Google Calendar, and Google Sheets APIs in your Google account.
  * The Easy Way:
