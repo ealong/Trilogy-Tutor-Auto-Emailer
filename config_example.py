@@ -18,7 +18,7 @@ TUTOR_SENDER = '(John Smith) <john.smith@gmail.com>'
 
 EVENT_DESCRIPTION = 'Boot Camp Tutorial Session' #String - Acc. to Tutor Guide, should be 'Boot Camp Tutorial Session', but if different for you, change this
 
-SHEET_NAME = #String - the Sheet ID of the Sheet containing your students' data (see here: https://help.form.io/assets/img/googlesheet/googlesheet-spreadsheet.png)
+SHEET_NAME = #String - the Sheet ID of the Google Sheet containing your students' data (see here: https://help.form.io/assets/img/googlesheet/googlesheet-spreadsheet.png)
 RANGE_NAME = #String - the Excel-formatted Worksheet name & Range of the data containing the students' names, emails, timezones, and Zoom links (Example: 'Student Roster!C5:G')
 NAME_COLUMN = #Int - number specifying the index of the name column in the range specified in RANGE_NAME
 EMAIL_COLUMN = 
@@ -32,5 +32,5 @@ RESENDING_EMAILS = False #Boolean - Flag indicating whether script should resend
 NIGHTLY_CUTOFF = '06:00' #String - Time after which the script should send confirmation emails for the next calendar.
 #^^For the night owls that want to send emails after midnight for the 'same' day.
 
-IS_IN_TEST_MODE = True #Boolean - Flag indicating whether script is in test mode (emails will send to TEST_EMAIL instead of student and Central Support)
+IS_IN_TEST_MODE = True #Boolean - Flag indicating whether script is in test mode (Emails will send to TEST_EMAIL instead of student and Central Support. Emails will be resent regardless of RESENDING_EMAILS.)
 TEST_EMAIL = #String - Email address for receiving test emails. Change the value of IS_IN_TEST_MODE to toggle test mode.

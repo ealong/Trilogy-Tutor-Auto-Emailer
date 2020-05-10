@@ -15,7 +15,7 @@ The script uses the Gmail, Google Calendar, and Google Sheets APIs to 1) extract
 
 **Installation:**
 
-1. Clone the repository and pip install the requirements (in terminal, navigate to folder then run 'pip install -r requirements.txt').
+1. Clone the repository and pip install the requirements (in terminal, navigate to folder then run 'pip install -r requirements.txt' (or 'pip3 install -r requirements.txt' if you have multiple versions of Python installed).
 
 2. Enable the Gmail, Google Calendar, and Google Sheets APIs in your Google account.
  * The Easy Way:
@@ -36,9 +36,9 @@ The script uses the Gmail, Google Calendar, and Google Sheets APIs to 1) extract
 
 There are a few options for running the script:
 
-* Double-click app.py to run it directly (in Windows, opens a terminal window, executes, then closes after completion).
-* Open the terminal, navigate to the working directory, then run 'python app.py'.
-* Set up script to run automatically on a daily basis
+* Double-click app.py to run it directly (in Windows, opens a terminal window, executes, then closes after completion). Personally, I created a shortcut to app.py and put it on my Desktop.
+* Open the terminal, navigate to the working directory, then run 'python app.py' (or 'python3 app.py').
+* Set up the script to run automatically on a daily basis
 	* Windows: https://datatofish.com/python-script-windows-scheduler/
 	* Mac: https://nathangrigg.com/2012/07/schedule-jobs-using-launchd
 
@@ -48,7 +48,7 @@ There are a few options for running the script:
 
 * Sometimes students sign up for sessions on Calendly with a different email than what's given in the Tutor Assignment Email. If the script can't find the email address on the event in the Sheets email column, it will prompt you for the correct address or to enter 'skip' to skip that event.
 
-* As it stands, the script expects the timezones in the Sheets worksheet to contain the appropriate US timezone abbreviation in all caps. Modify the code to suit the format you use in your Sheet (~line 182).
+* As it stands, the script expects the timezones in the Sheets worksheet to contain the appropriate US timezone abbreviation in all caps. Modify the code to suit the format you use in your Sheet (~line 198).
 
 * If one of the fields for a student whose session is tomorrow is blank (e.g. the Zoom link), the script will throw an error. It expects to find a name, email, timezone, and Zoom link for each scheduled student.
 

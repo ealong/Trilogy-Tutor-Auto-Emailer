@@ -13,7 +13,7 @@ from string import Template
 #Calendar
 from datetime import datetime, timedelta
 from pytz import timezone
-import shelve
+import json
 
 #APIclient
 from apiclient import errors
@@ -157,16 +157,17 @@ def main():
 		for row in values:
 			try:
 				student_data[row[EMAIL_COLUMN]] = (row[NAME_COLUMN], row[TZ_COLUMN], row[ZOOM_COLUMN])
-			except:
+			except: #TODO: IndexError? TypeError? Catch & return error message
 				print('If range out of index error, ensure there is data in each of the columns above for each student!')
 	
 	# Optionally check for emails already sent for next day
-	already_sent = set()
+	already_sent = []
 	if not RESENDING_EMAILS and not IS_IN_TEST_MODE:
-		with shelve.open('sent_msgs') as shelf:
-			if next_day_start.isoformat() in shelf:
-				already_sent = shelf[next_day_start.isoformat()]
-			
+		if os.path.exists('db.json'):
+			with open('db.json', 'r') as sent_file:
+				sent_dict = json.load(sent_file)
+				already_sent = sent_dict.get(next_day_start.isoformat(), [])
+				
 	
 	# Send confirmation email for each event
 	messages_sent = []
@@ -233,18 +234,26 @@ def main():
 	
 	if not IS_IN_TEST_MODE:
 		next_day_str = next_day_start.isoformat()
-		with shelve.open('sent_msgs', writeback=True) as shelf:
-			if next_day_str in shelf:
-				shelf[next_day_str].update(messages_sent)
-			else:
-				shelf[next_day_str] = set(messages_sent)
+		sent_dict = {}
+		if os.path.exists('db.json'):
+			with open('db.json', 'r') as sent_file:
+				sent_dict = json.load(sent_file)
+				day_msgs = sent_dict.get(next_day_str, [])
+				set_day_msgs = set(day_msgs)
+				set_day_msgs.update(messages_sent)
+				sent_dict[next_day_str] = list(set_day_msgs) #List -> set -> list, there has to be a better way....
 				
-			for key in shelf:
-				if key != next_day_str:
-					del shelf[key] # Purge old keys
+				for date in sent_dict:
+					if date != next_day_str:
+						del sent_dict[date] # Purge old keys
+		else:
+			sent_dict[next_day_str] = messages_sent
+			
+		with open('db.json', 'w') as sent_file:
+			json.dump(sent_dict, sent_file)
 	
 	if IS_IN_TEST_MODE:
-		print('Test complete. Set IS_IN_TEST_MODE = False in config to send to students.')
+		print('Test complete. Set IS_IN_TEST_MODE = False in config.py to send to students.')
 	
 if __name__ == "__main__":
 	main()
