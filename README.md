@@ -52,6 +52,8 @@ There are a few options for running the script:
 
 * If one of the fields for a student whose session is tomorrow is blank (e.g. the Zoom link), the script will throw an error. It expects to find a name, email, timezone, and Zoom link for each scheduled student.
 
+* Seeing a warning message like "Be careful with this message. Gmail could not verify that it actually came from _______"? See here: https://github.com/ealong/Trilogy-Tutor-Auto-Emailer/issues/2
+
 * Please feel free to branch and improve!
 
 * And if you run into any issues, Slack me or use the issues tab.
