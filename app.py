@@ -214,7 +214,7 @@ def main():
 			event_end = event_end_dt.strftime('%I:%M%p %Z')
 			
 			msg_text = msg_template.substitute(name=student_firstname,
-							date=event_date, starttime=event_start, endtime=event_end, zoomlink=student_zoom)
+							date=event_date, starttime=event_start, endtime=event_end, zoomlink=student_zoom, password=ZOOM_PASSWORD)
 			
 			subject_text = subject_template.substitute(date=event_date, starttime=event_start, endtime=event_end)
 		
@@ -241,11 +241,7 @@ def main():
 				day_msgs = sent_dict.get(next_day_str, [])
 				set_day_msgs = set(day_msgs)
 				set_day_msgs.update(messages_sent)
-				sent_dict[next_day_str] = list(set_day_msgs) #List -> set -> list, there has to be a better way....
-				
-				for date in sent_dict:
-					if date != next_day_str:
-						del sent_dict[date] # Purge old keys
+				sent_dict = {next_day_str: list(set_day_msgs)} #Just make new dictionary to purge old keys
 		else:
 			sent_dict[next_day_str] = messages_sent
 			

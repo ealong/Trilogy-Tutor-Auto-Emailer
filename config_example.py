@@ -25,6 +25,7 @@ EMAIL_COLUMN =
 TZ_COLUMN = 
 ZOOM_COLUMN = 
 #See guide for variables above here: https://imgur.com/a/q4LClAE
+ZOOM_PASSWORD = #String - the password for your Zoom sessions (by default, Zoom sets same password for all meetings)
 
 TUTOR_TIMEZONE = #String - pytz recognizeable timezone of tutor (for list of valid values, see here: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)
 
