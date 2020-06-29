@@ -203,6 +203,8 @@ def main():
                 tz = timezone('US/Mountain')
             elif 'PST' in student_tz:
                 tz = timezone('US/Pacific')
+            elif 'ARZ' in student_tz:
+                tz = timezone('US/Arizona')
             else:
                 print(f"Unable to interpret timezone. Please enter the timezone for {student_name} in pytz format (https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568).")
                 tz = timezone(input())
